@@ -1,0 +1,455 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HBD Bangrel!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+      body {
+        font-family: "Nunito", sans-serif;
+        background-color: #f0fdf4; /* Light green background */
+        background-image:
+          radial-gradient(#cbd5e1 2px, transparent 2px),
+          radial-gradient(#cbd5e1 2px, transparent 2px);
+        background-size: 40px 40px;
+        background-position:
+          0 0,
+          20px 20px;
+        overflow-x: hidden;
+      }
+
+      h1,
+      h2,
+      h3,
+      .heading-font {
+        font-family: "Fredoka One", cursive;
+      }
+
+      .doodle-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        pointer-events: none;
+        z-index: -1;
+        opacity: 0.15;
+        background-image: url('data:image/svg+xml;utf8,<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"><path d="M50 50h40v40H50zM120 70l20-20 20 20M30 150a20 20 0 1040 0 20 20 0 10-40 0" stroke="%23333" stroke-width="4" fill="none"/><circle cx="150" cy="150" r="15" stroke="%23333" stroke-width="4" fill="none"/><path d="M135 150h30M150 135v30" stroke="%23333" stroke-width="4" fill="none"/></svg>');
+        background-repeat: repeat;
+      }
+
+      /* Animasi untuk kotak kado */
+      .gift-box {
+        animation: bounce 2s infinite alternate;
+        cursor: pointer;
+        transition: transform 0.3s ease;
+      }
+
+      .gift-box:hover {
+        transform: scale(1.1) rotate(5deg);
+      }
+
+      @keyframes bounce {
+        0% {
+          transform: translateY(0);
+        }
+        100% {
+          transform: translateY(-20px);
+        }
+      }
+
+      .hidden-content {
+        display: none;
+        opacity: 0;
+        transition: opacity 1s ease-in;
+      }
+
+      .show-content {
+        display: block;
+        animation: fadeIn 1.5s forwards;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Styling polaroid untuk foto */
+      .polaroid {
+        background: white;
+        padding: 10px 10px 25px 10px;
+        box-shadow:
+          0 4px 8px rgba(0, 0, 0, 0.1),
+          0 6px 20px rgba(0, 0, 0, 0.1);
+        transform: rotate(-3deg);
+        transition: transform 0.3s;
+      }
+      .polaroid:nth-child(even) {
+        transform: rotate(4deg);
+      }
+      .polaroid:hover {
+        transform: scale(1.05) rotate(0deg);
+        z-index: 10;
+        position: relative;
+      }
+
+      .floating-element {
+        animation: float 6s ease-in-out infinite;
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0px) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-15px) rotate(5deg);
+        }
+        100% {
+          transform: translateY(0px) rotate(0deg);
+        }
+      }
+    </style>
+  </head>
+  <body class="text-gray-800 antialiased min-h-screen relative pb-20">
+    <!-- Latar belakang corat-coret game -->
+    <div class="doodle-bg"></div>
+
+    <div
+      id="intro-section"
+      class="min-h-screen flex flex-col items-center justify-center p-4 relative z-10"
+    >
+      <h1
+        class="text-4xl md:text-6xl text-center text-indigo-600 mb-8 drop-shadow-md"
+      >
+        Woy Nirelth! Ada Paket Nih! 📦
+      </h1>
+      <p
+        class="text-xl mb-12 text-center text-gray-700 font-bold bg-white/80 p-4 rounded-xl shadow-sm border-2 border-dashed border-indigo-300"
+      >
+        Coba klik kadonya dah, sapa tau isinya skin legend...
+      </p>
+
+      <!-- Kado SVG yang bisa diklik -->
+      <div class="gift-box" onclick="openGift()">
+        <svg
+          width="200"
+          height="200"
+          viewBox="0 0 24 24"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M20 10V20C20 20.5523 19.5523 21 19 21H5C4.44772 21 4 20.5523 4 20V10"
+            fill="#FDE047"
+            stroke="#EAB308"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M2 7C2 5.89543 2.89543 5 4 5H20C21.1046 5 22 5.89543 22 7V10H2V7Z"
+            fill="#F87171"
+            stroke="#EF4444"
+            stroke-width="2"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M12 5V21"
+            stroke="#EF4444"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M12 5C12 5 11 2 8 2C5 2 5 5 8 5C11 5 12 5 12 5Z"
+            fill="#60A5FA"
+            stroke="#3B82F6"
+            stroke-width="2"
+            stroke-linejoin="round"
+          />
+          <path
+            d="M12 5C12 5 13 2 16 2C19 2 19 5 16 5C13 5 12 5 12 5Z"
+            fill="#60A5FA"
+            stroke="#3B82F6"
+            stroke-width="2"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+    </div>
+
+    <div
+      id="main-content"
+      class="hidden-content container mx-auto px-4 pt-12 relative z-10"
+    >
+      <!-- Header & Ucapan Utama -->
+      <header class="text-center mb-16 relative">
+        <div
+          class="absolute -top-10 left-10 md:left-1/4 text-5xl floating-element"
+        >
+          🎮
+        </div>
+        <div
+          class="absolute top-10 right-10 md:right-1/4 text-5xl floating-element"
+          style="animation-delay: 1s"
+        >
+          🎲
+        </div>
+
+        <h1 class="text-5xl md:text-7xl text-rose-500 mb-4 drop-shadow-lg">
+          HAPPY BIRTHDAY<br />
+          <span class="text-indigo-600">BANGREL!</span>
+        </h1>
+        <p
+          class="text-2xl font-bold text-emerald-600 bg-white inline-block px-6 py-2 rounded-full shadow border-2 border-emerald-200 transform -rotate-2"
+        >
+          Umur nambah, skill mabar jg semoga ikut nambah 🍄
+        </p>
+      </header>
+
+      <!-- Profil / Foto Utama -->
+      <section
+        class="flex flex-col md:flex-row items-center justify-center gap-10 mb-20"
+      >
+        <div class="polaroid relative w-64 h-72">
+          <!-- PLACEHOLDER FOTO UTAMA - Ganti src ini dengan foto Relvy -->
+          <img
+            src="img/relmain.jpeg"
+            alt="Foto Bangrel"
+            class="w-full h-52 object-cover border-2 border-gray-200"
+          />
+          <p class="heading-font text-center mt-3 text-lg text-gray-700">
+            Bedeuh.
+          </p>
+          <!-- Pin icon -->
+          <div
+            class="absolute -top-4 left-1/2 transform -translate-x-1/2 text-2xl"
+          >
+            📍
+          </div>
+        </div>
+
+        <div
+          class="bg-white p-6 rounded-2xl shadow-xl border-4 border-yellow-300 max-w-lg relative"
+        >
+          <div class="absolute -right-5 -top-5 text-4xl transform rotate-12">
+            👾
+          </div>
+          <h2
+            class="text-2xl text-yellow-500 mb-3 border-b-2 border-yellow-100 pb-2"
+          >
+            Status Player:
+          </h2>
+          <ul class="space-y-2 text-lg text-gray-700">
+            <li>
+              <span class="font-bold text-indigo-500">Ril Nem:</span> Relvy
+              Azama Azka
+            </li>
+            <li>
+              <span class="font-bold text-rose-500">Julukan Legenda:</span>
+              Nirelth
+            </li>
+            <li>
+              <span class="font-bold text-emerald-500">Achievement:</span>
+              Berteman 7 tahun dan menjadi driver termuda embegay
+            </li>
+            <li>
+              <span class="font-bold text-sky-500">Current Quest:</span> Hayang
+              nyupiran MBG 🚛
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Ucapan Panjang -->
+      <section
+        class="bg-white/90 backdrop-blur-sm p-8 rounded-3xl shadow-2xl border-2 border-indigo-200 max-w-3xl mx-auto mb-20 relative"
+      >
+        <div
+          class="absolute -left-6 top-1/2 transform -translate-y-1/2 text-4xl"
+        >
+          💭
+        </div>
+        <h2 class="text-3xl text-center text-indigo-600 mb-6">
+          Kata KM IPA 5...
+        </h2>
+        <div class="text-lg text-gray-700 leading-relaxed space-y-4">
+          <p>
+            Woy Bangrel! HBD yak! Panjang umur, sehat, sukses selalu, dan semoga
+            resolusi tahun ini pada achieve semua gas aamiin.
+          </p>
+          <p>
+            Semoga jadi developer game handal, desainer 3D gacor, driver lintas
+            benua, streamer besar, dan food hunter dunia.
+          </p>
+          <p>
+            Yap <i>all the best</i> ya rel! Gow mabar lagi lah kita mengsombi 🧟
+          </p>
+        </div>
+        <p class="mt-8 text-right font-bold text-rose-500">
+          - roscractavavcrocoacth
+        </p>
+      </section>
+
+      <!-- Gallery -->
+      <section class="mb-10">
+        <h2 class="text-4xl text-center text-rose-500 mb-2">Unlockables ✨</h2>
+        <p class="text-center text-gray-600 mb-10">
+          Beberapa <i>drop item</i> :
+        </p>
+
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-5xl mx-auto px-4"
+        >
+          <!-- Memori 1 -->
+          <div
+            class="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-sky-200 transform transition hover:-translate-y-2 hover:shadow-xl group"
+          >
+            <div
+              class="h-48 bg-sky-100 flex items-center justify-center overflow-hidden"
+            >
+              <!-- PLACEHOLDER -->
+              <img
+                src="img/relulus.jpeg"
+                alt="Memori 1"
+                class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
+              />
+            </div>
+            <div class="p-4 bg-white relative z-10">
+              <h3 class="text-xl text-sky-600 mb-2">Grads</h3>
+              <p class="text-gray-600 text-sm">Next wisuda kuliah gas!</p>
+            </div>
+          </div>
+
+          <!-- Memori 2 -->
+          <div
+            class="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-emerald-200 transform transition hover:-translate-y-2 hover:shadow-xl group"
+          >
+            <div
+              class="h-48 bg-emerald-100 flex items-center justify-center overflow-hidden"
+            >
+              <!-- PLACEHOLDER -->
+              <img
+                src="img/relnaik.jpeg"
+                alt="Memori 2"
+                class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
+              />
+            </div>
+            <div class="p-4 bg-white relative z-10">
+              <h3 class="text-xl text-emerald-600 mb-2">
+                Relpi lagi naik (usia)
+              </h3>
+              <p class="text-gray-600 text-sm">Kade bos.</p>
+            </div>
+          </div>
+
+          <!-- Memori 3 -->
+          <div
+            class="bg-white rounded-xl shadow-lg overflow-hidden border-2 border-amber-200 transform transition hover:-translate-y-2 hover:shadow-xl group"
+          >
+            <div
+              class="h-48 bg-amber-100 flex items-center justify-center overflow-hidden"
+            >
+              <!-- PLACEHOLDER FOTO MEMORI 3 - Ganti src -->
+              <img
+                src="img/rosblok.jpeg"
+                alt="Memori 3"
+                class="w-full h-full object-cover group-hover:scale-110 transition duration-500"
+              />
+            </div>
+            <div class="p-4 bg-white relative z-10">
+              <h3 class="text-xl text-amber-600 mb-2">Sirkel Rosblok</h3>
+              <p class="text-gray-600 text-sm">Gas mabar ges!</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <div class="text-center mt-20 pb-10">
+        <button
+          onclick="fireConfetti()"
+          class="heading-font bg-gradient-to-r from-rose-400 to-indigo-500 text-white px-8 py-4 rounded-full text-xl shadow-lg hover:shadow-2xl transform transition hover:scale-105 active:scale-95 border-4 border-white"
+        >
+          🎉 SPAM KLIK BOS! 🎉
+        </button>
+        <p class="mt-4 text-gray-500 text-sm">
+          Made in Cina (Cinambo).
+        </p>
+      </div>
+    </div>
+
+    <script>
+      // Fungsi untuk membuka kado dan memunculkan konten
+      function openGift() {
+        // Sembunyikan section kado
+        document.getElementById("intro-section").style.display = "none";
+
+        // Tampilkan konten utama dengan animasi
+        const mainContent = document.getElementById("main-content");
+        mainContent.classList.remove("hidden-content");
+        mainContent.classList.add("show-content");
+
+        // Tembakkan confetti otomatis saat kado dibuka
+        fireConfetti();
+
+        // Scroll ke atas (in case)
+        window.scrollTo(0, 0);
+      }
+
+      // Fungsi efek Confetti
+      function fireConfetti() {
+        var duration = 3 * 1000;
+        var animationEnd = Date.now() + duration;
+        var defaults = {
+          startVelocity: 30,
+          spread: 360,
+          ticks: 60,
+          zIndex: 100,
+        };
+
+        function randomInRange(min, max) {
+          return Math.random() * (max - min) + min;
+        }
+
+        var interval = setInterval(function () {
+          var timeLeft = animationEnd - Date.now();
+
+          if (timeLeft <= 0) {
+            return clearInterval(interval);
+          }
+
+          var particleCount = 50 * (timeLeft / duration);
+
+          // Tembak dari dua sisi
+          confetti(
+            Object.assign({}, defaults, {
+              particleCount,
+              origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 },
+              colors: ["#f43f5e", "#6366f1", "#10b981", "#f59e0b"],
+            }),
+          );
+          confetti(
+            Object.assign({}, defaults, {
+              particleCount,
+              origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 },
+              colors: ["#f43f5e", "#6366f1", "#10b981", "#f59e0b"],
+            }),
+          );
+        }, 250);
+      }
+    </script>
+  </body>
+</html>
